@@ -1,2 +1,21 @@
 User-agent: *
-Allow: /
+
+# Aree riservate: dietro autenticazione, nessun contenuto utile agli indici.
+# Escluderle evita di sprecare crawl budget su pagine che rispondono con il login.
+Disallow: /clienti
+Disallow: /batch
+Disallow: /trattative
+Disallow: /impostazioni
+Disallow: /account
+Disallow: /tutorial
+Disallow: /admin
+
+# Pagine pubbliche
+Allow: /$
+Allow: /pricing
+Allow: /privacy-policy
+Allow: /cookie-policy
+Allow: /termini-servizio
+Allow: /dpa
+
+Sitemap: https://app.lori-crm.it/sitemap.xml

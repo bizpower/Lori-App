@@ -2,6 +2,7 @@ import { Component, type ErrorInfo, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { RouteSeo } from "@/components/RouteSeo";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -69,6 +70,7 @@ const AppContent = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <RouteSeo />
       {!isAdminRoute && <Navbar />}
       <div className="flex-1">
         <Routes>
