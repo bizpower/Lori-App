@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# L'app è una SPA: ogni route deve servire index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

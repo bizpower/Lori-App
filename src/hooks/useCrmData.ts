@@ -230,7 +230,8 @@ export function useLeads(listaId?: string) {
     if (!user) return;
     const { error } = await supabase
       .from("leads")
-      .update({ [field]: value, edit_timestamp: new Date().toISOString() })
+      // il nome della colonna è dinamico: il tipo generato non copre l'update per chiave variabile
+      .update({ [field]: value, edit_timestamp: new Date().toISOString() } as never)
       .eq("id", id)
       .eq("user_id", user.id);
     if (error) { toast.error("Errore nell'aggiornamento"); return; }
