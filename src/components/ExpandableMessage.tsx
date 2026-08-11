@@ -60,20 +60,22 @@ export default function ExpandableMessage({
     setLoading(true);
     setSuggestions([]);
     try {
-      const { supabase } = await import("@/integrations/supabase/client");
+      const { supabase, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } = await import(
+        "@/integrations/supabase/client"
+      );
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.access_token) {
         setSuggestions(["Devi essere autenticato per usare l'AI."]);
         return;
       }
       const resp = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-outreach`,
+        `${SUPABASE_URL}/functions/v1/generate-outreach`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session.access_token}`,
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            apikey: SUPABASE_PUBLISHABLE_KEY,
           },
           body: JSON.stringify({
             nome: leadName,
