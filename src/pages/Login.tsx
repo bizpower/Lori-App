@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, LogIn, UserPlus } from "lucide-react";
+import { Loader2, LogIn, UserPlus, Shield } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -273,6 +273,18 @@ const Login = () => {
               ? "Hai già un account? Accedi"
               : "Non hai un account? Registrati gratis"}
           </button>
+        </div>
+
+        {/* Accesso all'area riservata. Visibile a tutti: l'autorizzazione vera
+            e' lato server (ruolo admin in user_roles), non in questo link. */}
+        <div className="mt-6 border-t border-border pt-4 text-center">
+          <a
+            href="/admin"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <Shield className="h-3.5 w-3.5" />
+            Pannello Admin
+          </a>
         </div>
       </Card>
     </div>
