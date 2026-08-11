@@ -7,14 +7,17 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// Endpoint AI configurabile.
-// Di default punta al gateway Lovable (comportamento identico all'originale).
-// Per uscire da Lovable basta impostare AI_GATEWAY_URL / AI_API_KEY / AI_MODEL
-// su un qualsiasi endpoint compatibile con l'API chat/completions.
-const AI_GATEWAY_URL =
-  Deno.env.get("AI_GATEWAY_URL") ?? "https://ai.gateway.lovable.dev/v1/chat/completions";
-const AI_MODEL = Deno.env.get("AI_MODEL") ?? "google/gemini-3-flash-preview";
-const AI_API_KEY = Deno.env.get("AI_API_KEY") ?? Deno.env.get("LOVABLE_API_KEY");
+// Endpoint AI, da configurare sulle secret della funzione Supabase.
+// Nessun provider di default: qualsiasi endpoint compatibile con l'API
+// chat/completions va bene (OpenAI, Anthropic, OpenRouter, Groq...).
+//
+// Esempio con OpenAI:
+//   AI_GATEWAY_URL = https://api.openai.com/v1/chat/completions
+//   AI_MODEL       = gpt-4o-mini
+//   AI_API_KEY     = sk-...
+const AI_GATEWAY_URL = Deno.env.get("AI_GATEWAY_URL");
+const AI_MODEL = Deno.env.get("AI_MODEL") ?? "gpt-4o-mini";
+const AI_API_KEY = Deno.env.get("AI_API_KEY");
 
 serve(async (req) => {
   if (req.method === "OPTIONS")
@@ -43,7 +46,8 @@ serve(async (req) => {
     }
 
     const { nome, azienda, link_profilo } = await req.json();
-    if (!AI_API_KEY) throw new Error("AI_API_KEY (o LOVABLE_API_KEY) non configurata");
+    if (!AI_GATEWAY_URL || !AI_API_KEY)
+      throw new Error("AI_GATEWAY_URL e AI_API_KEY non configurate sulle secret della funzione");
 
     const systemPrompt = `Sei un esperto di outreach LinkedIn B2B in italiano.
 Genera esattamente 3 messaggi di outreach brevi (max 300 caratteri ciascuno), personalizzati e professionali.

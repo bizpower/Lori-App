@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
+import { signInWithOAuth } from "@/lib/oauth";
 import loriLogo from "@/assets/lori_logo.svg";
 
 const loginSchema = z.object({
@@ -94,7 +94,7 @@ const Login = () => {
 
   async function handleGoogleSignIn() {
     setSending(true);
-    const { error } = await lovable.auth.signInWithOAuth("google", {
+    const { error } = await signInWithOAuth("google", {
       redirect_uri: window.location.origin,
     });
     if (error) {
