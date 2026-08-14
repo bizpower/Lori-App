@@ -24,14 +24,30 @@ interface AdminLayoutProps {
 }
 
 const AdminLayout = ({ children, title }: AdminLayoutProps) => {
-  const { email } = useAuth();
+  const { email, loading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (!isAdminEmail(email)) {
+  // La sessione Supabase viene recuperata in modo asincrono: finche' non e'
+  // pronta l'email e' null e il controllo qui sotto fallirebbe, mostrando
+  // "Accesso negato" a un utente in realta' autorizzato.
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0a0e1a] text-white">
-        <p>Accesso negato</p>
+        <p className="text-sm text-white/60">Verifico le credenziali...</p>
+      </div>
+    );
+  }
+
+  if (!isAdminEmail(email)) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-2 bg-[#0a0e1a] px-6 text-center text-white">
+        <p className="text-lg font-semibold">Accesso negato</p>
+        <p className="text-sm text-white/60">
+          {email
+            ? <>Sei collegato come <strong>{email}</strong>, che non e' un account amministratore.</>
+            : "Nessuna sessione attiva: effettua l'accesso."}
+        </p>
       </div>
     );
   }
