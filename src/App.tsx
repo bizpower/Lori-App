@@ -1,8 +1,9 @@
-import { Component, type ErrorInfo, type ReactNode } from "react";
+import { Component, useEffect, type ErrorInfo, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { RouteSeo } from "@/components/RouteSeo";
+import { useAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
@@ -67,6 +68,14 @@ class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: bo
 const AppContent = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
+
+  // La sessione va caricata per qualunque rotta: prima veniva inizializzata
+  // solo dalla home, quindi aprendo direttamente /admin (o ricaricando la
+  // pagina) l'app restava in attesa delle credenziali all'infinito.
+  const initialize = useAuth((s) => s.initialize);
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
 
   return (
     <div className="flex min-h-screen flex-col">

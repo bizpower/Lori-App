@@ -21,6 +21,8 @@ function resolveUserType(email: string | null | undefined): UserType {
   return isAdminEmail(email) ? "admin" : "cliente";
 }
 
+let authInitialized = false;
+
 export const useAuth = create<AuthState>((set) => ({
   isLoggedIn: false,
   email: null,
@@ -45,6 +47,11 @@ export const useAuth = create<AuthState>((set) => ({
     set({ isLoggedIn: false, email: null, userType: null, user: null });
   },
   initialize: async () => {
+    // Idempotente: viene invocata all'avvio dell'app, ma una seconda chiamata
+    // non deve registrare un secondo listener.
+    if (authInitialized) return;
+    authInitialized = true;
+
     supabase.auth.onAuthStateChange((_event, session) => {
       set({
         isLoggedIn: !!session?.user,
