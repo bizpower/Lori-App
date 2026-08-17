@@ -62,13 +62,22 @@ export const useAuth = create<AuthState>((set) => ({
       });
     });
 
-    const { data: { session } } = await supabase.auth.getSession();
-    set({
-      isLoggedIn: !!session?.user,
-      email: session?.user?.email ?? null,
-      userType: resolveUserType(session?.user?.email),
-      user: session?.user ?? null,
-      loading: false,
-    });
+    // getSession() puo' fallire (rete assente, risposta inattesa, storage
+    // bloccato dal browser). Senza questa protezione l'eccezione interrompeva
+    // initialize prima di loading:false e l'app restava per sempre in attesa
+    // delle credenziali.
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      set({
+        isLoggedIn: !!session?.user,
+        email: session?.user?.email ?? null,
+        userType: resolveUserType(session?.user?.email),
+        user: session?.user ?? null,
+        loading: false,
+      });
+    } catch (error) {
+      console.error("[auth] recupero sessione fallito:", error);
+      set({ isLoggedIn: false, email: null, userType: null, user: null, loading: false });
+    }
   },
 }));

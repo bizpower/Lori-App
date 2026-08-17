@@ -45,9 +45,18 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
         <p className="text-lg font-semibold">Accesso negato</p>
         <p className="text-sm text-white/60">
           {email
-            ? <>Sei collegato come <strong>{email}</strong>, che non e' un account amministratore.</>
-            : "Nessuna sessione attiva: effettua l'accesso."}
+            ? <>Sei collegato come <strong>{email}</strong>, che non è un account amministratore.</>
+            : "Nessuna sessione attiva: effettua l'accesso per continuare."}
         </p>
+        {/* L'area admin non ha un login proprio: senza questo collegamento
+            l'utente resta su un vicolo cieco. */}
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="mt-4 rounded-md bg-white/10 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20"
+        >
+          {email ? "Cambia account" : "Vai al login"}
+        </button>
       </div>
     );
   }
